@@ -1,0 +1,53 @@
+
+eval $(/opt/homebrew/bin/brew shellenv)
+
+# Default editor
+export EDITOR="nano"
+
+# Enable colored `ls` and `grep`
+export CLICOLOR=1
+export LSCOLORS=GxFxCxDxBxegedabagaced
+export GREP_OPTIONS="--color=auto"
+
+# prevent wraparound lines
+if [ -f /opt/homebrew/etc/bash_completion ]; then
+  . /opt/homebrew/etc/bash_completion
+fi
+
+# --- Aliases ----------------------------------------------------------------
+
+alias ll="gls -lBshA --color=always --group-directories-first --ignore='._*'"
+
+alias py="/Users/hafnaouimedalii/miniforge3/bin/python"
+alias pipu="pip install --upgrade pip"
+alias tx="latexmk -pdf"
+alias txc="latexmk -pdf -c"
+
+alias c="clear"
+alias ..="cd .."
+
+alias gpom="git push origin master"
+
+alias brc="subl ~/.bashrc"
+alias src="source ~/.bashrc"
+
+# --- Custom prompt -----------------------------------------------------------
+
+PROMPT_COMMAND="printf '\n'"
+
+clr="\[\033[0m\]"
+red="\[\033[1;31m\]"
+blu="\[\033[1;34m\]"
+grn="\[\033[1;32m\]"
+export PS1="# - $grn\$CONDA_DEFAULT_ENV$clr|$blu\$(date +%F)$clr|$grn\h$clr|$blu\u$clr|$red\W$clr: \$ "
+
+
+# --- Miscellaneous ----------------------------------------------------------
+
+# Fix terminal size sync issues
+shopt -s checkwinsize
+
+# Enable bash completion if available
+if [ -f /opt/homebrew/etc/bash_completion ]; then
+    . /opt/homebrew/etc/bash_completion
+fi
