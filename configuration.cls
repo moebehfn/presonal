@@ -13,13 +13,20 @@
 \RequirePackage[T1,LY1]{fontenc}
 \RequirePackage[utf8]{inputenc}
 \RequirePackage{newtxtext,newtxmath}
-\RequirePackage{textcomp}
 \RequirePackage{upgreek,textgreek}
+\RequirePackage{textcomp}
+\RequirePackage{tgtermes}
+%\RequirePackage{microtype}
+\RequirePackage{todonotes}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%% PAGE LAYOUT AND SPACING
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\RequirePackage[letterpaper,margin=1in]{geometry} % ,showframe
+\RequirePackage[
+  letterpaper,
+  margin=1in,
+  % showframe,
+]{geometry}
 \RequirePackage[parfill]{parskip}
 \RequirePackage{changepage}
 \RequirePackage{setspace}
@@ -61,23 +68,20 @@
 %%% SECTION FORMATTING
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \RequirePackage[explicit]{titlesec}
-\renewcommand{\thesection}{\Roman{section}}
-\renewcommand{\thesubsection}{\thesection.\Alph{subsection}}
-\renewcommand{\thesubsubsection}{\thesubsection.\arabic{subsubsection}}
 
 \titleformat{\section}
-  {\large\bfseries\singlespacing\centering}
-  {\thesection.\space}{0pt}{#1}[]
+{\large\bfseries\singlespacing\centering}
+{\thesection.\space}{0pt}{#1}[]
 \titlespacing{\section}{0pt}{0.5\baselineskip}{0pt}
 
 \titleformat{\subsection}
-  {\normalsize\bfseries\singlespacing}
-  {\Alph{subsection}.\space}{0pt}{#1}[]
+{\normalsize\bfseries\singlespacing}
+{\thesubsection.\space}{0pt}{#1}[]
 \titlespacing{\subsection}{0pt}{0.5\baselineskip}{0pt}
 
 \titleformat{\subsubsection}
-  {\normalsize\itshape\singlespacing}
-  {\arabic{subsubsection}.\space}{0pt}{#1}[]
+{\normalsize\itshape\singlespacing}
+{\thesubsubsection.\space}{0pt}{#1}[]
 \titlespacing{\subsubsection}{0pt}{0.5\baselineskip}{0pt}
 
 \RequirePackage{lettrine}
@@ -108,13 +112,12 @@
 %%% ALGORITHMS AND CODE
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \usepackage[
-	linesnumbered,
-	lined,
-	ruled,
-	vlined,
-	longend,
+linesnumbered,
+lined,
+ruled,
+vlined,
+longend,
 ]{algorithm2e}
-\newcommand{\grcomment}[1]{\hfill\texttt{\textcolor{green}{// #1}}}
 
 \RequirePackage{listings}
 \RequirePackage{pythonhighlight}
@@ -152,15 +155,33 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%% BIBLIOGRAPHY AND CITATIONS
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\RequirePackage[sort&compress,numbers]{natbib}
 \RequirePackage{dirtytalk}
-\bibliographystyle{new-aiaa}
-\renewcommand{\bibfont}{\small}
+\RequirePackage{csquotes}
+\RequirePackage[
+backend=biber,
+style=numeric-comp,
+sorting=none,
+maxbibnames=99,
+minbibnames=1,
+maxcitenames=2,
+mincitenames=1,
+giveninits=true,
+terseinits=true,
+urldate=long,
+doi=true,
+url=true,
+isbn=false
+]{biblatex}
+
+\DeclareFieldFormat[article]{volume}{\mkbibbold{#1}}
+\DeclareFieldFormat[article]{number}{\mkbibparens{#1}}
+\DeclareFieldFormat[article]{pages}{#1}
+\DeclareFieldFormat{title}{\mkbibquote{#1}}
+\renewcommand*{\newunitpunct}{\addcomma\space}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%% HYPERLINKS AND CROSS-REFERENCES
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\RequirePackage[hyphens]{url}
 \RequirePackage{hyperref}
 \RequirePackage[english]{babel}
 \RequirePackage{cleveref}
@@ -171,7 +192,7 @@
 \crefname{appsec}{Appendix}{Appendices}
 \crefname{figure}{Figure}{Figures}
 \crefname{table}{Table}{Tables}
-\crefname{equation}{}{}
+\crefname{equation}{Equation}{Equations}
 \crefname{lstlisting}{Listing}{Listings}
 \crefname{algorithm}{Algorithm}{Algorithms}
 \crefname{theorem}{Theorem}{Theorems}
@@ -212,7 +233,12 @@
 \RequirePackage{slantsc}
 \RequirePackage{pgfgantt}
 \RequirePackage{lipsum}
+\RequirePackage{fancyhdr}
+\RequirePackage{todonotes}
 
+\usepackage[page,title,titletoc]{appendix}
+\usepackage{pdfpages}
+\usepackage{xparse}
 \newcommand{\tempcomment}[1]{{\color{green}\hl{Comment [to-be-removed]: #1}}}
 
 
