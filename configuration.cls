@@ -234,11 +234,16 @@ isbn=false
 \RequirePackage{pgfgantt}
 \RequirePackage{lipsum}
 \RequirePackage{fancyhdr}
-\RequirePackage{todonotes}
 
 \usepackage[page,title,titletoc]{appendix}
 \usepackage{pdfpages}
 \usepackage{xparse}
-\newcommand{\tempcomment}[1]{{\color{green}\hl{Comment [to-be-removed]: #1}}}
+
+\RequirePackage[colorinlistoftodos,prependcaption,textsize=small]{todonotes}
+\newcommand{\todoerror}[2][]{\todo[color=red!70, #1]{#2}}
+\newcommand{\todowarn}[2][]{\todo[color=orange, #1]{#2}}
+\newcommand{\todoremark}[2][]{\todo[color=yellow!80!black, #1]{#2}}
+\newcommand{\todohint}[2][]{\todo[color=green!20, #1]{#2}}
+\newcommand{\tododone}[2][]{\todo[color=blue!50, #1]{#2}}
 
 
