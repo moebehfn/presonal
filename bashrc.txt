@@ -1,5 +1,12 @@
-
 eval $(/opt/homebrew/bin/brew shellenv)
+
+# --- Environment variables --------------------------------------------------
+
+# Homebrew and Miniforge paths
+export PATH="/opt/homebrew/bin:$PATH"
+export PATH="/Users/hafnaouimedalii/miniforge3/bin:$PATH"
+export PYTHONPATH="/Volumes/moebessd/02_libs/optimus/src:$PYTHONPATH"
+export PYTHONPATH="/Volumes/moebessd/02_libs/MultiFiCBO/src:$PYTHONPATH"
 
 # Default editor
 export EDITOR="nano"
@@ -9,10 +16,32 @@ export CLICOLOR=1
 export LSCOLORS=GxFxCxDxBxegedabagaced
 export GREP_OPTIONS="--color=auto"
 
+# >>> conda initialize >>>
+# !! Contents within this block are managed by 'conda init' !!
+__conda_setup="$('/Users/hafnaouimedalii/miniforge3/bin/conda' 'shell.bash' 'hook' 2>/dev/null)"
+if [ $? -eq 0 ]; then
+    eval "$__conda_setup"
+else
+    if [ -f "/Users/hafnaouimedalii/miniforge3/etc/profile.d/conda.sh" ]; then
+        . "/Users/hafnaouimedalii/miniforge3/etc/profile.d/conda.sh"
+    else
+        export PATH="/Users/hafnaouimedalii/miniforge3/bin:$PATH"
+    fi
+fi
+unset __conda_setup
+
+export MAMBA_ROOT_PREFIX="/Users/hafnaouimedalii/miniforge3"
+if [ -f "/Users/hafnaouimedalii/miniforge3/etc/profile.d/mamba.sh" ]; then
+    . "/Users/hafnaouimedalii/miniforge3/etc/profile.d/mamba.sh"
+fi
+
 # prevent wraparound lines
 if [ -f /opt/homebrew/etc/bash_completion ]; then
-  . /opt/homebrew/etc/bash_completion
+    . /opt/homebrew/etc/bash_completion
 fi
+
+# <<< conda initialize <<<
+export PATH="/Users/hafnaouimedalii/miniforge3/bin:$PATH"
 
 # --- Aliases ----------------------------------------------------------------
 
@@ -20,11 +49,17 @@ alias ll="gls -lBshA --color=always --group-directories-first --ignore='._*'"
 
 alias py="/Users/hafnaouimedalii/miniforge3/bin/python"
 alias pipu="pip install --upgrade pip"
-alias tx="latexmk -pdf"
-alias txc="latexmk -pdf -c"
+alias tx="latexmk -xelatex"
+alias txc="latexmk -xelatex -c"
 
 alias c="clear"
 alias ..="cd .."
+
+alias phd="cd /Volumes/moebessd/"
+alias opt="cd /Volumes/moebessd/02_libs/optimus"
+alias icloud="cd /Users/hafnaouimedalii/Library/Mobile\ Documents/com~apple~CloudDocs/Documents/"
+
+alias ssduse="lsof +D /Volumes/moebessd/"
 
 alias gpom="git push origin master"
 
@@ -41,7 +76,6 @@ blu="\[\033[1;34m\]"
 grn="\[\033[1;32m\]"
 export PS1="# - $grn\$CONDA_DEFAULT_ENV$clr|$blu\$(date +%F)$clr|$grn\h$clr|$blu\u$clr|$red\W$clr: \$ "
 
-
 # --- Miscellaneous ----------------------------------------------------------
 
 # Fix terminal size sync issues
@@ -51,3 +85,104 @@ shopt -s checkwinsize
 if [ -f /opt/homebrew/etc/bash_completion ]; then
     . /opt/homebrew/etc/bash_completion
 fi
+
+function cache_purge() {
+    # 1. Define the patterns to delete
+    # Note: Trailing slashes (e.g. "dist/") are handled automatically by the script now.
+    local patterns=(
+        # --- macOS & System ---
+        ".DS_Store"
+        ".AppleDouble"
+        ".LSOverride"
+        "._*"
+        ".Trashes"
+        ".Spotlight-*"
+        ".fseventsd"
+
+        # --- VS Code & Editors ---
+        ".vscode"
+        ".idea"
+        "*.swp"
+        "*~"
+        "*.sublime-workspace"
+        "*.sublime-project"
+
+        # --- Python ---
+        "__pycache__"
+        "*.py[cod]"
+        "*$py.class"
+        "*.so"
+        ".Python"
+        "build"
+        "develop-eggs"
+        "dist"
+        "eggs"
+        ".eggs"
+        "lib"
+        "lib64"
+        "parts"
+        "sdist"
+        "var"
+        "wheels"
+        "*.egg-info"
+        ".installed.cfg"
+        ".env"
+        ".venv"
+        "env"
+        "venv"
+        "ENV"
+        ".ipynb_checkpoints"
+        ".pytest_cache"
+        ".mypy_cache"
+        ".ruff_cache"
+
+        # --- LaTeX ---
+        "*.aux" "*.lof" "*.log" "*.lot" "*.fls" "*.out" "*.toc"
+        "*.fmt" "*.fot" "*.cb" "*.cb2" ".*.lb" "*.dvi" "*.xdv"
+        "*-converted-to.*" "*.bbl" "*.bcf" "*.blg" "*-blx.aux"
+        "*-blx.bib" "*.run.xml" "*.fdb_latexmk" "*.synctex"
+        "*.synctex.gz" "*.pdfsync" "*.nav" "*.pre" "*.snm"
+        "*.vrb" "*.spl" "*.idx" "*.ilg" "*.ind" "_minted*"
+        "*.pyg" "*.glg" "*.glo" "*.gls" "*.ist" ".texpadtmp"
+        "*.tdo"
+    )
+
+    # 2. Build the 'find' arguments dynamically
+    local find_args=()
+    for pattern in "${patterns[@]}"; do
+        # STRIP TRAILING SLASHES:
+        # "${pattern%/}" removes the last character if it is a slash.
+        # This fixes the issue where "dist/" wouldn't match the folder "dist"
+        clean_pattern="${pattern%/}"
+
+        if [ ${#find_args[@]} -gt 0 ]; then
+            find_args+=("-o")
+        fi
+        find_args+=("-name" "$clean_pattern")
+    done
+
+    echo "Scanning current directory (Safe-guarding .git)..."
+    echo "---------------------------------------------------"
+
+    # 3. DRY RUN
+    # Logic:
+    # 1. If name is .git, PRUNE (stop looking in there).
+    # 2. OR, if matches our patterns, PRINT it.
+    find . -name ".git" -prune -o \( "${find_args[@]}" \) -print
+
+    echo "---------------------------------------------------"
+    echo "The files/folders above were found."
+
+    # 4. SAFETY PROMPT
+    read -p "⚠ DELETE all of these recursively? (y/N) " -n 1 -r
+    echo
+
+    if [[ $REPLY =~ ^[Yy]$ ]]; then
+        # 5. EXECUTE DELETE
+        # exec rm -rfv {} + will pass all found items to rm at once
+        find . -name ".git" -prune -o \( "${find_args[@]}" \) -exec rm -rfv {} +
+        echo "Cleanup complete."
+    else
+        echo "Operation cancelled. No files were touched."
+    fi
+}
